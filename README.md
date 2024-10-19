@@ -1,3 +1,10 @@
+Install node js latest version in your system and configure it.
+
+In project root folder install all the require dependencies 
+```bash
+npm install
+```
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
