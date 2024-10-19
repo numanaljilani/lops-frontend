@@ -17,90 +17,52 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useComponiesMutation } from "@/redux/query/componiesApi";
+import { useCreateCompanyMutation } from "@/redux/query/componiesApi";
 import { useCreateEmployeeMutation } from "@/redux/query/employee";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function CreateEmployee() {
-  const router = useRouter();
-  const [employeeDetails, setEmployeeDetails] = useState<{
-    name: string;
-    email: string;
-    contact: string;
-    description: string;
-    location: string;
-    companyf: string;
-    position: string;
-    salary: number;
-    hourly: number;
-    Currency: string;
-    status: string;
-  }>({
+  const router = useRouter()
+  const [companyDetails, setCompanyDetails] = useState<
+    {
+        name: string;
+        about: string;
+        location: string;
+        type: string;
+        status: string;
+      }
+
+  >( {
     name: "",
-    email: "",
-    contact: "",
-    description: "",
+    about: "",
     location: "",
-    companyf: "",
-    position: "",
-    salary: 0,
-    hourly: 0,
-    Currency: "",
+    type: "",
     status: "",
   });
 
-  const [createEmployeeApi, { data, isSuccess, error, isError }] =
-    useCreateEmployeeMutation();
+  const [createCompanyApi, { data, isSuccess, error, isError }] =
+    useCreateCompanyMutation();
   const saveEmployeeDetails = async () => {
-    console.log(employeeDetails);
-    const res = await createEmployeeApi({ ...employeeDetails });
+    console.log(companyDetails);
+    const res = await createCompanyApi({ ...companyDetails });
     console.log(res, "response from the server");
   };
 
   useEffect(() => {
     if (isSuccess) {
       console.log(data, "response from the server");
-      toast(`User has been created.`, {
-        description: `${employeeDetails?.name} has been joint as ${employeeDetails?.position} in ${employeeDetails?.companyf}`,
+      toast(`Company has been created.`, {
+        description: `${companyDetails?.name} has been created in ${companyDetails?.location} which provide ${companyDetails?.type}`,
         // action: {
         //   label: "Undo",
         //   onClick: () => console.log("Undo"),
         // },
       });
-      router.replace("/employee");
+      router.replace("/companies")
     }
   }, [isSuccess]);
-
-  const [companies, setCompanies] = useState([]);
-  const [
-    companiesApi,
-    {
-      data: comapniesData,
-      isSuccess: companiesIsSuccess,
-      error: companiesError,
-      isError: companiesIsError,
-    },
-  ] = useComponiesMutation();
-
-  const getCompanies = async () => {
-    const res = await companiesApi({});
-    // console.log(res, "response");
-  };
-
-  useEffect(() => {
-    getCompanies();
-  }, []);
-
-  useEffect(() => {
-    if (companiesIsSuccess) {
-      console.log(comapniesData, "response from server");
-      if (comapniesData) {
-        setCompanies(comapniesData);
-      }
-    }
-  }, [companiesIsSuccess]);
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -108,7 +70,7 @@ export default function CreateEmployee() {
           <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
               <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                Create Employee
+                Create Company
               </h1>
 
               <div className="hidden items-center gap-2 md:ml-auto md:flex">
@@ -116,7 +78,7 @@ export default function CreateEmployee() {
                   Discard
                 </Button>
                 <Button size="sm" onClick={saveEmployeeDetails}>
-                  Save Employee
+                  Save Company
                 </Button>
               </div>
             </div>
@@ -124,9 +86,9 @@ export default function CreateEmployee() {
               <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                 <Card x-chunk="dashboard-07-chunk-0">
                   <CardHeader>
-                    <CardTitle>Employee Details</CardTitle>
+                    <CardTitle>Compony Details</CardTitle>
                     <CardDescription>
-                      Enter the employee details
+                      Enter the company details
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -137,33 +99,71 @@ export default function CreateEmployee() {
                           id="name"
                           type="text"
                           className="w-full"
-                          placeholder="Hamdan Al Maktoom"
+                          placeholder="LITES"
                           onChange={(e) => {
                             e.preventDefault();
-                            setEmployeeDetails({
-                              ...employeeDetails,
+                            setCompanyDetails({
+                              ...companyDetails,
                               name: e.target.value,
                             });
                           }}
                         />
                       </div>
                       <div className="grid gap-3">
-                        <Label htmlFor="name">Email</Label>
+                        <Label htmlFor="loction">Location</Label>
                         <Input
-                          id="email"
-                          type="email"
+                          id="loction"
+                          type="text"
                           className="w-full"
-                          placeholder="example@gmail.com"
+                          placeholder="Dubai , Sharjah"
                           onChange={(e) => {
                             e.preventDefault();
-                            setEmployeeDetails({
-                              ...employeeDetails,
-                              email: e.target.value,
+                            setCompanyDetails({
+                              ...companyDetails,
+                              location: e.target.value,
                             });
                           }}
                         />
                       </div>
                       <div className="grid gap-3">
+                        <Label htmlFor="subcategory">Service</Label>
+                        <Select
+                          onValueChange={(value) =>
+                            setCompanyDetails({
+                              ...companyDetails,
+                              type: value,
+                            })
+                          }
+                        >
+                          <SelectTrigger
+                            id="Service"
+                            aria-label="Select Service"
+                          >
+                            <SelectValue placeholder="Select Service" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Consultancy Services">
+                              Consultancy Services
+                            </SelectItem>
+                            <SelectItem value="General Contracting">
+                              General Contracting
+                            </SelectItem>
+                            <SelectItem value="Electro-Mechanical Works">
+                              Electro-Mechanical Works
+                            </SelectItem>
+                            <SelectItem value="Design & Drafting Services">
+                              Design & Drafting Services
+                            </SelectItem>
+                            <SelectItem value="IT Solutions">
+                              IT Solutions
+                            </SelectItem>
+                            <SelectItem value="Video Production Services">
+                              Video Production Services
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      {/* <div className="grid gap-3">
                         <Label htmlFor="name">Location</Label>
                         <Input
                           id="location"
@@ -172,14 +172,14 @@ export default function CreateEmployee() {
                           placeholder="Dubai , Abu dhabi , Sharjah"
                           onChange={(e) => {
                             e.preventDefault();
-                            setEmployeeDetails({
-                              ...employeeDetails,
+                            setCompanyDetails({
+                              ...companyDetails,
                               location: e.target.value,
                             });
                           }}
                         />
-                      </div>
-                      <div className="grid gap-3">
+                      </div> */}
+                      {/* <div className="grid gap-3">
                         <Label htmlFor="contact">Contact</Label>
                         <Input
                           id="contact"
@@ -188,24 +188,24 @@ export default function CreateEmployee() {
                           placeholder="+971 999999999"
                           onChange={(e) => {
                             e.preventDefault();
-                            setEmployeeDetails({
-                              ...employeeDetails,
+                            setCompanyDetails({
+                              ...companyDetails,
                               contact: e.target.value,
                             });
                           }}
                         />
-                      </div>
+                      </div> */}
                       <div className="grid gap-3">
-                        <Label htmlFor="description">Description</Label>
+                        <Label htmlFor="about">About</Label>
                         <Textarea
-                          id="description"
+                          id="about"
                           defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
                           className="min-h-32"
                           onChange={(e) => {
                             e.preventDefault();
-                            setEmployeeDetails({
-                              ...employeeDetails,
-                              description: e.target.value,
+                            setCompanyDetails({
+                              ...companyDetails,
+                              about: e.target.value,
                             });
                           }}
                         />
@@ -214,7 +214,7 @@ export default function CreateEmployee() {
                   </CardContent>
                 </Card>
 
-                <Card x-chunk="dashboard-07-chunk-1">
+                {/* <Card x-chunk="dashboard-07-chunk-1">
                   <CardHeader>
                     <CardTitle>Compony Details</CardTitle>
                   </CardHeader>
@@ -224,8 +224,8 @@ export default function CreateEmployee() {
                         <Label htmlFor="category">Compony</Label>
                         <Select
                           onValueChange={(value) =>
-                            setEmployeeDetails({
-                              ...employeeDetails,
+                            setCompanyDetails({
+                              ...companyDetails,
                               companyf: value,
                             })
                           }
@@ -237,16 +237,12 @@ export default function CreateEmployee() {
                             <SelectValue placeholder="Select Compony" />
                           </SelectTrigger>
                           <SelectContent>
-                            {companies.map(
-                              (data: { name: string; url: string }, index) => (
-                                <SelectItem key={index} value={data?.url}>
-                                  {data?.name}
-                                </SelectItem>
-                              )
-                            )}
-                            {/* <SelectItem value="http://127.0.0.1:8000/api/v1/employees/4/">
+                            <SelectItem value="http://127.0.0.1:8000/api/v1/companies/2/">
+                              LITS
+                            </SelectItem>
+                            <SelectItem value="http://127.0.0.1:8000/api/v1/employees/4/">
                               LECS
-                            </SelectItem> */}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -254,8 +250,8 @@ export default function CreateEmployee() {
                         <Label htmlFor="subcategory">Designation</Label>
                         <Select
                           onValueChange={(value) =>
-                            setEmployeeDetails({
-                              ...employeeDetails,
+                            setCompanyDetails({
+                              ...companyDetails,
                               position: value,
                             })
                           }
@@ -294,8 +290,8 @@ export default function CreateEmployee() {
                           placeholder="5000 AED"
                           onChange={(e) => {
                             e.preventDefault();
-                            setEmployeeDetails({
-                              ...employeeDetails,
+                            setCompanyDetails({
+                              ...companyDetails,
                               salary: Number(e.target.value),
                             });
                           }}
@@ -305,8 +301,8 @@ export default function CreateEmployee() {
                         <Label htmlFor="subcategory">Currency</Label>
                         <Select
                           onValueChange={(value) =>
-                            setEmployeeDetails({
-                              ...employeeDetails,
+                            setCompanyDetails({
+                              ...companyDetails,
                               Currency: value,
                             })
                           }
@@ -334,8 +330,8 @@ export default function CreateEmployee() {
                           placeholder="20 AED"
                           onChange={(e) => {
                             e.preventDefault();
-                            setEmployeeDetails({
-                              ...employeeDetails,
+                            setCompanyDetails({
+                              ...companyDetails,
                               hourly: Number(e.target.value),
                             });
                           }}
@@ -343,7 +339,7 @@ export default function CreateEmployee() {
                       </div>
                     </div>
                   </CardContent>
-                </Card>
+                </Card> */}
               </div>
               <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
                 <Card x-chunk="dashboard-07-chunk-3">
@@ -356,8 +352,8 @@ export default function CreateEmployee() {
                         <Label htmlFor="status">Status</Label>
                         <Select
                           onValueChange={(value) =>
-                            setEmployeeDetails({
-                              ...employeeDetails,
+                            setCompanyDetails({
+                              ...companyDetails,
                               status: value,
                             })
                           }

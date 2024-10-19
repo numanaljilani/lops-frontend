@@ -4,14 +4,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 
 // Define a service using a base URL and expected endpoints
-export const employeeApi = createApi({
-  reducerPath: 'employeeApi',
+export const companiesApi = createApi({
+  reducerPath: 'companiesApi',
   baseQuery: fetchBaseQuery({ baseUrl: `${urls.server}/api/v1/` }),
   endpoints: (builder) => ({
-    employee: builder.mutation({
+    componies: builder.mutation({
         query: (data) => {
           return {
-            url: "employees",
+            url: "companies",
             method: "GET",
             headers: {
               "Content-type": "application/json; charset=UTF-8",
@@ -19,10 +19,10 @@ export const employeeApi = createApi({
           };
         },
       }),
-    createEmployee: builder.mutation({
+    createCompany: builder.mutation({
         query: (data) => {
           return {
-            url: "employees/",
+            url: "companies/",
             method: "POST",
             body: data,
             headers: {
@@ -48,4 +48,4 @@ export const employeeApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useAllcitesMutation , useEmployeeMutation ,useCreateEmployeeMutation} = employeeApi
+export const { useAllcitesMutation , useComponiesMutation ,useCreateCompanyMutation} = companiesApi

@@ -7,43 +7,43 @@ import { Badge } from "@/components/ui/badge";
 
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEmployeeMutation } from "@/redux/query/employee";
-import { useEffect, useState } from "react";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { formatDate } from "@/lib/dateFormat";
+import { useComponiesMutation } from "@/redux/query/componiesApi";
+import { useEffect, useState } from "react";
 
-function Employee() {
-  const [employee, setEmployee] = useState([]);
-  const [employeeApi, { data, isSuccess, error, isError }] =
-    useEmployeeMutation();
+function Companies() {
+  const [companies, setCompanies] = useState([]);
+  const [companiesApi, { data, isSuccess, error, isError }] =
+  useComponiesMutation();
 
   const getEmployes = async () => {
-    const res = await employeeApi({});
-    // console.log(res, "response");
+    const res = await companiesApi({});
+    console.log(res, "response");
   };
 
   useEffect(() => {
@@ -54,7 +54,7 @@ function Employee() {
     if (isSuccess) {
       console.log(data, "response from server");
       if (data) {
-        setEmployee(data);
+        setCompanies(data);
       }
     }
   }, [isSuccess]);
@@ -111,11 +111,11 @@ function Employee() {
                     Export
                   </span>
                 </Button>
-                <Link href="/employee/create-employee">
+                <Link href="/companies/create-company">
                   <Button size="sm" className="h-7 gap-1">
                     <PlusCircle className="h-3.5 w-3.5" />
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Add Employee
+                      Add Compony
                     </span>
                   </Button>
                 </Link>
@@ -124,9 +124,9 @@ function Employee() {
             <TabsContent value="all">
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader>
-                  <CardTitle>Employee</CardTitle>
+                  <CardTitle>Componies</CardTitle>
                   <CardDescription>
-                    Manage your employee and view their performance.
+                    Manage your Componies and view their performance.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -138,9 +138,9 @@ function Employee() {
                         </TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Salary</TableHead>
+                        <TableHead>Location</TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Total Sales
+                          Service
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
                           Created at
@@ -151,7 +151,7 @@ function Employee() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {employee?.map((data : {name : string , added_date : string }, index) => {
+                      {companies?.map((data : {name : string , added_date : string , location : string , type : string , active : boolean}, index : number) => {
                         return (
                           <TableRow key={index}>
                             <TableCell className="hidden sm:table-cell">
@@ -167,11 +167,11 @@ function Employee() {
                               {data?.name}
                             </TableCell>
                             <TableCell>
-                              <Badge variant="outline">Active</Badge>
+                              <Badge variant="outline">{data?.active ? "Active" : "Inactive"}</Badge>
                             </TableCell>
-                            <TableCell>$499.99</TableCell>
+                            <TableCell>{data?.location}</TableCell>
                             <TableCell className="hidden md:table-cell">
-                              25
+                            {data?.type}
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
                               {formatDate(data?.added_date)}
@@ -216,4 +216,4 @@ function Employee() {
   );
 }
 
-export default Employee;
+export default Companies;

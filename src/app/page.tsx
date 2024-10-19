@@ -22,6 +22,7 @@ export default function Home() {
   const Login = () => {
     console.log("email :", email);
     console.log("password :", password);
+    router.push("/dashboard");
     if (email && password) {
       toast(`${email} you have loggedin"`, {
         description: "Sunday, December 03, 2023 at 9:00 AM",
@@ -30,7 +31,7 @@ export default function Home() {
         //   onClick: () => console.log("Undo"),
         // },
       });
-      router.push("/dashboard");
+
     } else {
       toast(`Please provide the credentials"`, {
         description: "Sunday, December 03, 2023 at 9:00 AM",

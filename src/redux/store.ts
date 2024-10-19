@@ -9,6 +9,7 @@ import userReducer from './slice/profileSlice';
 
 import {authApi} from './query/authApi';
 import {employeeApi} from './query/employee';
+import {companiesApi} from './query/componiesApi';
 
 // const persistConfig = {
 //   key: "root",
@@ -26,6 +27,7 @@ export const store = configureStore({
     // Add the generated reducer as a specific top-level slice
     [authApi.reducerPath]: authApi.reducer,
     [employeeApi.reducerPath]: employeeApi.reducer,
+    [companiesApi.reducerPath]: companiesApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
@@ -33,6 +35,7 @@ export const store = configureStore({
     getDefaultMiddleware({serializableCheck: false}).concat(
       authApi.middleware,
       employeeApi.middleware,
+      companiesApi.middleware,
     ),
 });
 

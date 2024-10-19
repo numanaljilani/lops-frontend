@@ -3,6 +3,7 @@
 import Headers from "@/components/Headers";
 import { store } from "@/redux/store";
 import { Provider } from "react-redux";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -15,6 +16,7 @@ export default function RootLayout({
         <Headers />
         {children}
       </div>
+      <Toaster />
     </Provider>
   );
 }
