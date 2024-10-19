@@ -54,6 +54,31 @@ export default function CreateEmployee() {
   const [createEmployeeApi, { data, isSuccess, error, isError }] =
     useCreateEmployeeMutation();
   const saveEmployeeDetails = async () => {
+
+    if(!employeeDetails.name){
+      toast(`Name cant be empty.`);
+      return
+    }
+    if(!employeeDetails.email){
+      toast(`email cant be empty.`);
+      return
+    }
+    if(!employeeDetails.location){
+      toast(`location cant be empty.`);
+      return
+    }
+    if(!employeeDetails.description){
+      toast(`description cant be empty.`);
+      return
+    }
+    if(!employeeDetails.position){
+      toast(`position cant be empty.`);
+      return
+    }
+    if(!employeeDetails.companyf){
+      toast(`Company cant be empty.`);
+      return
+    }
     console.log(employeeDetails);
     const res = await createEmployeeApi({ ...employeeDetails });
     console.log(res, "response from the server");
