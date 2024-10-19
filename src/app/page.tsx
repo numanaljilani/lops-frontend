@@ -96,7 +96,7 @@ export default function Home() {
           </div> */}
         </div>
       </div>
-      <div className="hidden bg-muted lg:block lg:h-[600px] ">
+      <div className="hidden bg-muted lg:block ">
         {/* <div > */}
         <Image
           src="/login.jpg"
