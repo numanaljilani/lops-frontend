@@ -33,13 +33,14 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { formatDate } from "@/lib/dateFormat";
-import { useComponiesMutation } from "@/redux/query/componiesApi";
+import { useComponiesMutation, useDeleteCompanyMutation } from "@/redux/query/componiesApi";
 import { useEffect, useState } from "react";
 
 function Companies() {
   const [companies, setCompanies] = useState([]);
   const [companiesApi, { data, isSuccess, error, isError }] =
   useComponiesMutation();
+  const [deleteCompanyApi] = useDeleteCompanyMutation()
 
   const getEmployes = async () => {
     const res = await companiesApi({});
@@ -58,6 +59,14 @@ function Companies() {
       }
     }
   }, [isSuccess]);
+
+
+  const deleteCompany = async(url : string) =>{
+    console.log(url.split("/")[6])
+    const res = await deleteCompanyApi({id : url.split("/")[6]})
+    console.log(res , ">>>>")
+    getEmployes()
+  }
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -151,7 +160,7 @@ function Companies() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {companies?.map((data : {name : string , added_date : string , location : string , type : string , active : boolean}, index : number) => {
+                      {companies?.map((data : {name : string , added_date : string , location : string , type : string , active : boolean , url : string}, index : number) => {
                         return (
                           <TableRow key={index}>
                             <TableCell className="hidden sm:table-cell">
@@ -191,7 +200,7 @@ function Companies() {
                                 <DropdownMenuContent align="end">
                                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                   <DropdownMenuItem>Edit</DropdownMenuItem>
-                                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={()=>deleteCompany(data.url)}>Delete</DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             </TableCell>

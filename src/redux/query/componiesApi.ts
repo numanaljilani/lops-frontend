@@ -31,14 +31,14 @@ export const companiesApi = createApi({
           };
         },
       }),
-      allcites: builder.mutation({
-        query: (token) => {
+      deleteCompany: builder.mutation({
+        query: (data) => {
           return {
-            url: "all-cities",
-            method: "POST",
+            url: `companies/${data?.id}/`,
+            method: "Delete",
             headers: {
               "Content-type": "application/json; charset=UTF-8",
-              authorization: `bearer ${token}`,
+              authorization: `bearer ${data?.token}`,
             },
           };
         },
@@ -48,4 +48,4 @@ export const companiesApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useAllcitesMutation , useComponiesMutation ,useCreateCompanyMutation} = companiesApi
+export const { useDeleteCompanyMutation , useComponiesMutation ,useCreateCompanyMutation} = companiesApi

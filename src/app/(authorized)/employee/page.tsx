@@ -32,7 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEmployeeMutation } from "@/redux/query/employee";
+import { useDeleteEmployeeMutation, useEmployeeMutation } from "@/redux/query/employee";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/lib/dateFormat";
 
@@ -40,6 +40,8 @@ function Employee() {
   const [employee, setEmployee] = useState([]);
   const [employeeApi, { data, isSuccess, error, isError }] =
     useEmployeeMutation();
+
+    const [deleteEmployeeApi] = useDeleteEmployeeMutation();
 
   const getEmployes = async () => {
     const res = await employeeApi({});
@@ -58,6 +60,16 @@ function Employee() {
       }
     }
   }, [isSuccess]);
+
+const deleteEmployee = async (emp : string) =>{
+console.log(emp.split('/')[6])
+const res = await deleteEmployeeApi({id : emp.split('/')[6]});
+console.log(res , ">>>>")
+getEmployes()
+
+}
+
+  
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -151,7 +163,7 @@ function Employee() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {employee?.map((data : {name : string , added_date : string }, index) => {
+                      {employee?.map((data : {name : string , added_date : string , url : string }, index) => {
                         return (
                           <TableRow key={index}>
                             <TableCell className="hidden sm:table-cell">
@@ -190,8 +202,8 @@ function Employee() {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                                  <DropdownMenuItem  >Edit</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={()=>deleteEmployee(data.url)}>Delete</DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             </TableCell>

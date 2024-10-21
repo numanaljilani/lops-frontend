@@ -31,14 +31,14 @@ export const employeeApi = createApi({
           };
         },
       }),
-      allcites: builder.mutation({
-        query: (token) => {
+      deleteEmployee: builder.mutation({
+        query: (data) => {
           return {
-            url: "all-cities",
-            method: "POST",
+            url: `employees/${data.id}/`,
+            method: "Delete",
             headers: {
               "Content-type": "application/json; charset=UTF-8",
-              authorization: `bearer ${token}`,
+              authorization: `bearer ${data.token}`,
             },
           };
         },
@@ -48,4 +48,4 @@ export const employeeApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useAllcitesMutation , useEmployeeMutation ,useCreateEmployeeMutation} = employeeApi
+export const { useDeleteEmployeeMutation , useEmployeeMutation ,useCreateEmployeeMutation} = employeeApi
