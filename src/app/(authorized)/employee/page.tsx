@@ -1,5 +1,5 @@
 "use client";
-import { File, ListFilter, MoreHorizontal, PlusCircle } from "lucide-react";
+import { File, ListFilter, MoreHorizontal, PlusCircle, Router } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -32,16 +32,32 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useDeleteEmployeeMutation, useEmployeeMutation } from "@/redux/query/employee";
+import {
+  useDeleteEmployeeMutation,
+  useEmployeeMutation,
+} from "@/redux/query/employee";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/lib/dateFormat";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useRouter } from "next/navigation";
 
 function Employee() {
+  const router = useRouter()
   const [employee, setEmployee] = useState([]);
   const [employeeApi, { data, isSuccess, error, isError }] =
     useEmployeeMutation();
 
-    const [deleteEmployeeApi] = useDeleteEmployeeMutation();
+  const [deleteEmployeeApi] = useDeleteEmployeeMutation();
 
   const getEmployes = async () => {
     const res = await employeeApi({});
@@ -61,15 +77,25 @@ function Employee() {
     }
   }, [isSuccess]);
 
-const deleteEmployee = async (emp : string) =>{
-console.log(emp.split('/')[6])
-const res = await deleteEmployeeApi({id : emp.split('/')[6]});
-console.log(res , ">>>>")
-getEmployes()
+  // const deleteEmployee = async (emp: string) => {
+  //   // console.log(emp.split("/")[6]);
+  //   // const res = await deleteEmployeeApi({ id: emp.split("/")[6] });
+  //   // console.log(res, ">>>>");
+  //   // getEmployes();
+  // };
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<any>(null);
 
-}
+  const deleteEmployee = async (url: string) => {
+    // Add your deletion logic here
+    console.log(`Deleting employee at ${url}`);
+    console.log(url.split("/")[6]);
+    const res = await deleteEmployeeApi({ id: url.split("/")[6] });
+    console.log(res, ">>>>");
+    getEmployes();
+    setItemToDelete(null);
+  };
 
-  
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -163,53 +189,73 @@ getEmployes()
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {employee?.map((data : {name : string , added_date : string , url : string }, index) => {
-                        return (
-                          <TableRow key={index}>
-                            <TableCell className="hidden sm:table-cell">
-                              <Image
-                                alt="Employee Image"
-                                className="aspect-square rounded-md object-cover"
-                                height="64"
-                                src={`https://ui-avatars.com/api/?name=${data?.name}&&color=fff&&background=3A72EC&&rounded=true&&font-size=0.44`}
-                                width="64"
-                              />
-                            </TableCell>
-                            <TableCell className="font-medium">
-                              {data?.name}
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="outline">Active</Badge>
-                            </TableCell>
-                            <TableCell>$499.99</TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              25
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              {formatDate(data?.added_date)}
-                            </TableCell>
-                            <TableCell>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    aria-haspopup="true"
-                                    size="icon"
-                                    variant="ghost"
-                                  >
-                                    <MoreHorizontal className="h-4 w-4" />
-                                    <span className="sr-only">Toggle menu</span>
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                  <DropdownMenuItem  >Edit</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={()=>deleteEmployee(data.url)}>Delete</DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
+                      {employee?.map(
+                        (
+                          data: {
+                            name: string;
+                            added_date: string;
+                            url: string;
+                          },
+                          index
+                        ) => {
+                          return (
+                            <TableRow key={index}>
+                              <TableCell className="hidden sm:table-cell">
+                                <Image
+                                  alt="Employee Image"
+                                  className="aspect-square rounded-md object-cover"
+                                  height="64"
+                                  src={`https://ui-avatars.com/api/?name=${data?.name}&&color=fff&&background=3A72EC&&rounded=true&&font-size=0.44`}
+                                  width="64"
+                                />
+                              </TableCell>
+                              <TableCell className="font-medium">
+                                {data?.name}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">Active</Badge>
+                              </TableCell>
+                              <TableCell>$499.99</TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                25
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {formatDate(data?.added_date)}
+                              </TableCell>
+                              <TableCell>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button
+                                      aria-haspopup="true"
+                                      size="icon"
+                                      variant="ghost"
+                                    >
+                                      <MoreHorizontal className="h-4 w-4" />
+                                      <span className="sr-only">
+                                        Toggle menu
+                                      </span>
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel>
+                                      Actions
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuItem onClick={()=> router.push(`/employee/${data?.url?.split("/")[6]}`)}>Edit</DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      onClick={() => {
+                                        setIsDialogOpen(true);
+                                        setItemToDelete(data);
+                                      }}
+                                    >
+                                      Delete
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        }
+                      )}
                     </TableBody>
                   </Table>
                 </CardContent>
@@ -222,6 +268,27 @@ getEmployes()
               </Card>
             </TabsContent>
           </Tabs>
+
+          <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <AlertDialogTrigger asChild></AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {`Are you sure you want to delete ${itemToDelete?.name}? This action
+                  cannot be undone.`}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => deleteEmployee(itemToDelete?.url)}
+                >
+                  Confirm Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </main>
       </div>
     </div>

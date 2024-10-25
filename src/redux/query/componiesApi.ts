@@ -43,9 +43,34 @@ export const companiesApi = createApi({
           };
         },
       }),
+      companyDetails: builder.mutation({
+        query: (data) => {
+          return {
+            url: `companies/${data.id}/`,
+            method: "GET",
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              authorization: `bearer ${data.token}`,
+            },
+          };
+        },
+      }),
+      patchCompany: builder.mutation({
+        query: (data) => {
+          return {
+            url: `companies/${data.id}/`,
+            method: "Patch",
+            body : data.details,
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              authorization: `bearer ${data.token}`,
+            },
+          };
+        },
+      }),
   }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useDeleteCompanyMutation , useComponiesMutation ,useCreateCompanyMutation} = companiesApi
+export const { useDeleteCompanyMutation , useComponiesMutation ,useCreateCompanyMutation , useCompanyDetailsMutation , usePatchCompanyMutation} = companiesApi

@@ -43,9 +43,34 @@ export const employeeApi = createApi({
           };
         },
       }),
+      employeeDetails: builder.mutation({
+        query: (data) => {
+          return {
+            url: `employees/${data.id}/`,
+            method: "GET",
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              authorization: `bearer ${data.token}`,
+            },
+          };
+        },
+      }),
+      patchEmployee: builder.mutation({
+        query: (data) => {
+          return {
+            url: `employees/${data.id}/`,
+            method: "Patch",
+            body : data.details,
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              authorization: `bearer ${data.token}`,
+            },
+          };
+        },
+      }),
   }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useDeleteEmployeeMutation , useEmployeeMutation ,useCreateEmployeeMutation} = employeeApi
+export const { useDeleteEmployeeMutation , useEmployeeMutation ,useCreateEmployeeMutation , useEmployeeDetailsMutation , usePatchEmployeeMutation} = employeeApi

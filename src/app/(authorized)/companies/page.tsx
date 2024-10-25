@@ -35,9 +35,16 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { formatDate } from "@/lib/dateFormat";
 import { useComponiesMutation, useDeleteCompanyMutation } from "@/redux/query/componiesApi";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import AlertDialogAlert from "@/components/dialogs/AlertDialog";
 
 function Companies() {
+  const router = useRouter()
   const [companies, setCompanies] = useState([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  const [itemToDelete, setItemToDelete] = useState<any>(null);
+
   const [companiesApi, { data, isSuccess, error, isError }] =
   useComponiesMutation();
   const [deleteCompanyApi] = useDeleteCompanyMutation()
@@ -48,8 +55,17 @@ function Companies() {
   };
 
   useEffect(() => {
-    getEmployes();
+
+      getEmployes();
+    
+ 
   }, []);
+  useEffect(() => {
+    if(isDialogOpen){
+      getEmployes();
+    }
+ 
+  }, [isDialogOpen]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -66,6 +82,11 @@ function Companies() {
     const res = await deleteCompanyApi({id : url.split("/")[6]})
     console.log(res , ">>>>")
     getEmployes()
+  }
+
+  const update = async (url : string) =>{
+    console.log(url.split("/").reverse()[1])
+    router.push(`/companies/${url.split("/").reverse()[1]}`)
   }
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -199,8 +220,10 @@ function Companies() {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={()=>deleteCompany(data.url)}>Delete</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={()=> update(data.url)}>Edit</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={()=>{
+                                  setItemToDelete(data);
+                                    setIsDialogOpen(true)}}>Delete</DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             </TableCell>
@@ -220,6 +243,12 @@ function Companies() {
             </TabsContent>
           </Tabs>
         </main>
+        <AlertDialogAlert
+          isDialogOpen={isDialogOpen}
+          setIsDialogOpen={setIsDialogOpen}
+          itemToDelete={itemToDelete}
+          deleteCompany={true}
+        />
       </div>
     </div>
   );
