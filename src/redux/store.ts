@@ -10,6 +10,7 @@ import userReducer from './slice/profileSlice';
 import {authApi} from './query/authApi';
 import {employeeApi} from './query/employee';
 import {companiesApi} from './query/componiesApi';
+import {timeSheetApi} from './query/timesheet';
 
 // const persistConfig = {
 //   key: "root",
@@ -28,6 +29,7 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [employeeApi.reducerPath]: employeeApi.reducer,
     [companiesApi.reducerPath]: companiesApi.reducer,
+    [timeSheetApi.reducerPath]: timeSheetApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
@@ -36,6 +38,7 @@ export const store = configureStore({
       authApi.middleware,
       employeeApi.middleware,
       companiesApi.middleware,
+      timeSheetApi.middleware,
     ),
 });
 

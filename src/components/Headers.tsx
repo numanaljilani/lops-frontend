@@ -81,6 +81,12 @@ function Headers() {
       >
         Analytics
       </Link>
+      <Link
+        href="/timesheet"
+        className={`${path.split("/")[1] != "projects" ?"text-muted-foreground" : "text-foreground"} transition-colors hover:text-foreground`}
+      >
+        Time Sheet
+      </Link>
     </nav>
     <Sheet>
       <SheetTrigger asChild>
