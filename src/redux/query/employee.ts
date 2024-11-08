@@ -59,7 +59,7 @@ export const employeeApi = createApi({
         query: (data) => {
           return {
             url: `employees/${data.id}/`,
-            method: "Patch",
+            method: "PATCH",
             body : data.details,
             headers: {
               "Content-type": "application/json; charset=UTF-8",

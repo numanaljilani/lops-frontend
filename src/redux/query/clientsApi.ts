@@ -4,14 +4,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 
 // Define a service using a base URL and expected endpoints
-export const companiesApi = createApi({
-  reducerPath: 'companiesApi',
+export const clientsApi = createApi({
+  reducerPath: 'clientsApi',
   baseQuery: fetchBaseQuery({ baseUrl: `${urls.server}/api/v1/` }),
   endpoints: (builder) => ({
-    componies: builder.mutation({
+    clients: builder.mutation({
         query: (data) => {
           return {
-            url: "companies",
+            url: "clients",
             method: "GET",
             headers: {
               "Content-type": "application/json; charset=UTF-8",
@@ -19,23 +19,24 @@ export const companiesApi = createApi({
           };
         },
       }),
-    createCompany: builder.mutation({
+    createClient: builder.mutation({
         query: (data) => {
           return {
-            url: "companies/",
+            url: "clients/",
             method: "POST",
-            body: data,
+            body: data.data,
             headers: {
               "Content-type": "application/json; charset=UTF-8",
             },
           };
         },
       }),
-      deleteCompany: builder.mutation({
+      deleteClient: builder.mutation({
         query: (data) => {
+          console.log("delet client ",data)
           return {
-            url: `companies/${data?.id}/`,
-            method: "Delete",
+            url: `clients/${data?.id}/`,
+            method: "DELETE",
             headers: {
               "Content-type": "application/json; charset=UTF-8",
               authorization: `bearer ${data?.token}`,
@@ -43,10 +44,10 @@ export const companiesApi = createApi({
           };
         },
       }),
-      companyDetails: builder.mutation({
+      clientDetails: builder.mutation({
         query: (data) => {
           return {
-            url: `companies/${data.id}/`,
+            url: `clients/${data.id}/`,
             method: "GET",
             headers: {
               "Content-type": "application/json; charset=UTF-8",
@@ -55,7 +56,7 @@ export const companiesApi = createApi({
           };
         },
       }),
-      patchCompany: builder.mutation({
+      patchClient: builder.mutation({
         query: (data) => {
           return {
             url: `companies/${data.id}/`,
@@ -68,9 +69,13 @@ export const companiesApi = createApi({
           };
         },
       }),
+
+
+
+
   }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useDeleteCompanyMutation , useComponiesMutation ,useCreateCompanyMutation , useCompanyDetailsMutation , usePatchCompanyMutation} = companiesApi
+export const { useClientDetailsMutation , useClientsMutation , useCreateClientMutation , useDeleteClientMutation , usePatchClientMutation } = clientsApi
