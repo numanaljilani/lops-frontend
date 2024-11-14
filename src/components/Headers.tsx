@@ -64,6 +64,12 @@ function Headers() {
         Clients
       </Link>
       <Link
+        href="/rfqs"
+        className={`${path.split("/")[1] != "rfqs" ?"text-muted-foreground" : "text-foreground"} transition-colors hover:text-foreground`}
+      >
+        RFQ's
+      </Link>
+      <Link
         href="/employee"
         className={`${path.split("/")[1] != "employee" ?"text-muted-foreground" : "text-foreground"} transition-colors hover:text-foreground`}
       >

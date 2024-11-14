@@ -44,7 +44,7 @@ function Employee() {
     salary: number;
     hourly: number;
     Currency: string;
-    status: string;
+    status: boolean;
   }>({
     name: "",
     email: "",
@@ -56,7 +56,7 @@ function Employee() {
     salary: 0,
     hourly: 0,
     Currency: "",
-    status: "",
+    status: false,
   });
 
   const [employeeApi, { data, isSuccess, error, isError }] =
@@ -77,18 +77,29 @@ function Employee() {
   };
 
   const updateEmployee = async () => {
-    const res = await patchEmployeApi({ id: path?.split("/")?.reverse()[0] , details : employeeDetails });
+    setUpdateView(false);
+    const res = await patchEmployeApi({
+      id: path?.split("/")?.reverse()[0],
+      details: employeeDetails,
+    });
     console.log(res, "updated");
+    toast(
+      `Updated`,
+
+      {
+        description: "Employee information has been updated.",
+      }
+    );
   };
 
   useEffect(() => {
     getEmployeeDetails();
   }, []);
   useEffect(() => {
-if(patchIsSuccess){
-    getEmployeeDetails()
-    setUpdateView(false)
-}
+    if (patchIsSuccess) {
+      getEmployeeDetails();
+      setUpdateView(false);
+    }
   }, [patchIsSuccess]);
   useEffect(() => {
     if (isSuccess) {
@@ -143,7 +154,9 @@ if(patchIsSuccess){
                   <Button variant="outline" size="sm">
                     Discard
                   </Button>
-                  <Button size="sm" onClick={updateEmployee}>Save Changes</Button>
+                  <Button size="sm" onClick={updateEmployee}>
+                    Save Changes
+                  </Button>
                   <Button
                     size="sm"
                     className="bg-red-200 text-red-700 hover:bg-red-300"
@@ -360,9 +373,6 @@ if(patchIsSuccess){
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="AED">AED</SelectItem>
-                              <SelectItem value="USD">USD</SelectItem>
-                              <SelectItem value="INR">INR</SelectItem>
-                              <SelectItem value="SAR">SAR</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -390,16 +400,20 @@ if(patchIsSuccess){
                   <Card x-chunk="dashboard-07-chunk-3">
                     <CardHeader>
                       <CardTitle>Employee Status</CardTitle>
+                      <CardDescription>
+                        Update the status of the client he/she active or
+                        inactive.
+                      </CardDescription>
                     </CardHeader>
+
                     <CardContent>
                       <div className="grid gap-6">
                         <div className="grid gap-3">
-                          <Label htmlFor="status">Status</Label>
                           <Select
                             onValueChange={(value) =>
                               setEmployeeDetails({
                                 ...employeeDetails,
-                                status: value,
+                                status: value === "true",
                               })
                             }
                           >
@@ -411,29 +425,12 @@ if(patchIsSuccess){
                             </SelectTrigger>
                             <SelectContent>
                               {/* <SelectItem value="draft">On Leave</SelectItem> */}
-                              <SelectItem value={"Active"}>Active</SelectItem>
-                              <SelectItem value={"Inactive"}>
-                                Inactive
-                              </SelectItem>
+                              <SelectItem value={"true"}>Active</SelectItem>
+                              <SelectItem value={"false"}>Inactive</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card x-chunk="dashboard-07-chunk-5">
-                    <CardHeader>
-                      <CardTitle>Archive Product</CardTitle>
-                      <CardDescription>
-                        Lipsum dolor sit amet, consectetur adipiscing elit.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div></div>
-                      <Button size="sm" variant="secondary">
-                        Archive Product
-                      </Button>
                     </CardContent>
                   </Card>
                 </div>
@@ -469,80 +466,28 @@ if(patchIsSuccess){
                       <div className="grid gap-6">
                         <div className="grid gap-3">
                           <Label htmlFor="name">Name</Label>
-                          {/* <Input
-                            id="name"
-                            type="text"
-                            className="w-full"
-                            placeholder="Hamdan Al Maktoom"
-                            onChange={(e) => {
-                              e.preventDefault();
-                              setEmployeeDetails({
-                                ...employeeDetails,
-                                name: e.target.value,
-                              });
-                            }}
-                            defaultValue={employeeDetails?.name}
-                          /> */}
+
                           <h4 className="font-semibold text-lg">
                             {employeeDetails.name}
                           </h4>
                         </div>
                         <div className="grid gap-3">
                           <Label htmlFor="name">Email</Label>
-                          {/* <Input
-                            id="email"
-                            type="email"
-                            className="w-full"
-                            placeholder="example@gmail.com"
-                            onChange={(e) => {
-                              e.preventDefault();
-                              setEmployeeDetails({
-                                ...employeeDetails,
-                                email: e.target.value,
-                              });
-                            }}
-                            defaultValue={employeeDetails?.email}
-                          /> */}
+
                           <h4 className="font-semibold text-lg">
                             {employeeDetails.email}
                           </h4>
                         </div>
                         <div className="grid gap-3">
                           <Label htmlFor="name">Location</Label>
-                          {/* <Input
-                            id="location"
-                            type="text"
-                            className="w-full"
-                            placeholder="Dubai , Abu dhabi , Sharjah"
-                            onChange={(e) => {
-                              e.preventDefault();
-                              setEmployeeDetails({
-                                ...employeeDetails,
-                                location: e.target.value,
-                              });
-                            }}
-                            defaultValue={employeeDetails?.location}
-                          /> */}
+
                           <h4 className="font-semibold text-lg">
                             {employeeDetails.location}
                           </h4>
                         </div>
                         <div className="grid gap-3">
                           <Label htmlFor="contact">Contact</Label>
-                          {/* <Input
-                            id="contact"
-                            type="number"
-                            className="w-full"
-                            placeholder="+971 999999999"
-                            onChange={(e) => {
-                              e.preventDefault();
-                              setEmployeeDetails({
-                                ...employeeDetails,
-                                contact: e.target.value,
-                              });
-                            }}
-                            defaultValue={employeeDetails?.contact}
-                          /> */}
+
                           <h4 className="font-semibold text-lg">
                             {employeeDetails.contact
                               ? employeeDetails.contact

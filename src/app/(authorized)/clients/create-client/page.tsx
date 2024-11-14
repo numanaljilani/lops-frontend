@@ -18,40 +18,38 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateClientMutation } from "@/redux/query/clientsApi";
-import { useCreateCompanyMutation } from "@/redux/query/componiesApi";
-import { useCreateEmployeeMutation } from "@/redux/query/employee";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function CreateClient() {
-  const router = useRouter()
-  const [clientDetails, setClientDetails] = useState<
-    {
-      client_name: string;
-      contact_info: string;
-      company_name: string;
-        type: string;
-        status: string;
-        about : string;
-      }
-
-  >( {
+  const router = useRouter();
+  const [clientDetails, setClientDetails] = useState<{
+    client_name: string;
+    contact_info: string;
+    name: number;
+    type: string;
+    status: boolean;
+    about: string;
+  }>({
     client_name: "",
     contact_info: "",
-    company_name: "",
+    name: 1,
     type: "",
-    status: "",
-    about : ""
+    status: true,
+    about: "",
   });
 
   const [createClientApi, { data, isSuccess, error, isError }] =
     useCreateClientMutation();
   const saveEmployeeDetails = async () => {
     console.log(clientDetails);
-    const res = await createClientApi({ data : {...clientDetails} , token : "" });
+    const res = await createClientApi({
+      data: { ...clientDetails },
+      token: "",
+    });
     console.log(res, "response from the server");
-    router.replace("/clients")
+    router.replace("/clients");
   };
 
   useEffect(() => {
@@ -59,9 +57,8 @@ export default function CreateClient() {
       console.log(data, "response from the server");
       toast(`Company has been created.`, {
         description: `${clientDetails?.client_name} has been created .`,
-
       });
-      router.replace("/companies")
+      router.replace("/companies");
     }
   }, [isSuccess]);
   return (
@@ -88,9 +85,7 @@ export default function CreateClient() {
                 <Card x-chunk="dashboard-07-chunk-0">
                   <CardHeader>
                     <CardTitle>Client Details</CardTitle>
-                    <CardDescription>
-                      Enter the Clinet details
-                    </CardDescription>
+                    <CardDescription>Enter the Clinet details</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-6">
@@ -114,14 +109,14 @@ export default function CreateClient() {
                         <Label htmlFor="name">Company Name</Label>
                         <Input
                           id="name"
-                          type="text"
+                          type="number"
                           className="w-full"
                           placeholder="LITES"
                           onChange={(e) => {
                             e.preventDefault();
                             setClientDetails({
                               ...clientDetails,
-                              company_name: e.target.value,
+                              name: Number(e.target.value),
                             });
                           }}
                         />
@@ -142,7 +137,7 @@ export default function CreateClient() {
                           }}
                         />
                       </div>
-                      
+
                       <div className="grid gap-3">
                         <Label htmlFor="subcategory">Service</Label>
                         <Select
@@ -371,7 +366,7 @@ export default function CreateClient() {
                           onValueChange={(value) =>
                             setClientDetails({
                               ...clientDetails,
-                              status: value,
+                              status: value === "true",
                             })
                           }
                         >
@@ -380,8 +375,8 @@ export default function CreateClient() {
                           </SelectTrigger>
                           <SelectContent>
                             {/* <SelectItem value="draft">On Leave</SelectItem> */}
-                            <SelectItem value={"Active"}>Active</SelectItem>
-                            <SelectItem value={"Inactive"}>Inactive</SelectItem>
+                            <SelectItem value={"true"}>Active</SelectItem>
+                            <SelectItem value={"false"}>Inactive</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

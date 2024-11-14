@@ -67,17 +67,17 @@ export default function Client() {
     company_name: string;
     contact_info: string;
     type: string;
-    status: string;
+    status: boolean;
   }>({
     client_name: "",
     company_name: "",
     contact_info: "",
     type: "",
-    status: "",
+    status: false,
   });
 
   const [clientsDetailsApi, { data, isSuccess, error, isError }] =
-  useClientDetailsMutation();
+    useClientDetailsMutation();
 
   const [rfqsApi] = useRfqsMutation();
   const [patchCompanyApi] = usePatchCompanyMutation();
@@ -85,24 +85,26 @@ export default function Client() {
   const [rfq, setRfq] = useState<{
     project_type: string;
     scope_of_work: string;
-    status: string;
+    status: boolean;
     remarks: string;
     client: string;
   }>({
     project_type: "",
     scope_of_work: "",
-    status: "",
+    status: false,
     remarks: "",
-    client : "",
+    client: "",
   });
 
-  const [createRFQApi] =
-    useCreateRFQMutation();
+  const [createRFQApi] = useCreateRFQMutation();
 
-    const handleSubmit =  async() =>{
-      const res = await createRFQApi({data : {...rfq , client :  path.split("/").reverse()[0]} , token : ""})
-      console.log(res , "response")
-    }
+  const handleSubmit = async () => {
+    const res = await createRFQApi({
+      data: { ...rfq, client: path.split("/").reverse()[0] },
+      token: "",
+    });
+    console.log(res, "response");
+  };
 
   const getClientDetails = async () => {
     console.log(companyDetails);
@@ -127,10 +129,17 @@ export default function Client() {
 
   const saveCompanyDetails = async () => {
     console.log(companyDetails);
+    setUpdateView(false);
     const res = await patchCompanyApi({
       id: path.split("/").reverse()[0],
       details: companyDetails,
       token: "",
+    });
+    toast(`Updated`,
+      
+      {
+      description: "Client information has been updated.",
+    
     });
     console.log(res, "response from the server");
   };
@@ -154,7 +163,6 @@ export default function Client() {
   const deleteCompany = async (url: string) => {
     console.log(url.split("/")[6]);
     const res = await [];
-    console.log(res, ">>>>");
     getEmployes();
   };
 
@@ -190,9 +198,9 @@ export default function Client() {
                 <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                   <Card x-chunk="dashboard-07-chunk-0">
                     <CardHeader>
-                      <CardTitle>Compony Details</CardTitle>
+                      <CardTitle>Client Details</CardTitle>
                       <CardDescription>
-                        Enter the company details
+                        Update the Client details
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -270,8 +278,6 @@ export default function Client() {
                             </SelectContent>
                           </Select>
                         </div>
-
-                       
                       </div>
                     </CardContent>
                   </Card>
@@ -289,7 +295,7 @@ export default function Client() {
                             onValueChange={(value) =>
                               setCompanyDetails({
                                 ...companyDetails,
-                                status: value,
+                                status: value === "true",
                               })
                             }
                           >
@@ -301,10 +307,8 @@ export default function Client() {
                             </SelectTrigger>
                             <SelectContent>
                               {/* <SelectItem value="draft">On Leave</SelectItem> */}
-                              <SelectItem value={"Active"}>Active</SelectItem>
-                              <SelectItem value={"Inactive"}>
-                                Inactive
-                              </SelectItem>
+                              <SelectItem value={"true"}>Active</SelectItem>
+                              <SelectItem value={"false"}>Inactive</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -312,14 +316,14 @@ export default function Client() {
                     </CardContent>
                   </Card>
 
-                  <Card x-chunk="dashboard-07-chunk-5">
+                 { <Card x-chunk="dashboard-07-chunk-5 hidden">
                     <CardHeader>
                       <CardTitle>Actions</CardTitle>
                       <CardDescription>
-                        You can update and delete the Company.
+                        You can update and delete the Client.
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    {/* <CardContent>
                       <div className="flex justify-between gap-2">
                         <Button
                           size="sm"
@@ -337,8 +341,8 @@ export default function Client() {
                           Delete
                         </Button>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </CardContent> */}
+                  </Card>}
                 </div>
               </div>
               <div className="flex items-center justify-center gap-2 md:hidden">
@@ -395,10 +399,11 @@ export default function Client() {
                           <Label htmlFor="contact">Company</Label>
 
                           <h4 className="font-semibold text-lg">
-                            {companyDetails.company_name ? companyDetails.company_name : "-"}
+                            {companyDetails.company_name
+                              ? companyDetails.company_name
+                              : "-"}
                           </h4>
                         </div>
-                      
                       </div>
                     </CardContent>
                   </Card>
@@ -420,8 +425,8 @@ export default function Client() {
                     </CardContent>
                   </Card>
 
-                  <Card x-chunk="dashboard-07-chunk-5">
-                    <CardHeader>
+                   <Card x-chunk="dashboard-07-chunk-5">
+                   <CardHeader>
                       <CardTitle>Actions</CardTitle>
                       <CardDescription>
                         You can update and delete the employee.
@@ -455,7 +460,6 @@ export default function Client() {
               <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
                 <Tabs defaultValue="all">
                   <div className="flex items-center">
-                  
                     <div className="ml-auto mb-5 flex items-center gap-2">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -499,14 +503,17 @@ export default function Client() {
                           Export
                         </span>
                       </Button>
-                      
-                        <Button size="sm" onClick={()=> setIsCreateRFQDialogOpen(true)} className="h-7 gap-1">
-                          <PlusCircle className="h-3.5 w-3.5" />
-                          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                            Add Client
-                          </span>
-                        </Button>
-                    
+
+                      <Button
+                        size="sm"
+                        onClick={() => setIsCreateRFQDialogOpen(true)}
+                        className="h-7 gap-1"
+                      >
+                        <PlusCircle className="h-3.5 w-3.5" />
+                        <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                          Add Client
+                        </span>
+                      </Button>
                     </div>
                   </div>
                   <TabsContent value="all">
@@ -638,12 +645,16 @@ export default function Client() {
           </main>
         )}
       </div>
-      {<CreateDialog setIsDialogOpen={setIsCreateRFQDialogOpen} isDialogOpen={isCreateRFQDialogOpen} 
-      rfq = {rfq}
-      setRfq={setRfq}
-      handleSubmit={handleSubmit}
-      // client={path.split("/").reverse()[0]}
-      />}
+      {
+        <CreateDialog
+          setIsDialogOpen={setIsCreateRFQDialogOpen}
+          isDialogOpen={isCreateRFQDialogOpen}
+          rfq={rfq}
+          setRfq={setRfq}
+          handleSubmit={handleSubmit}
+          // client={path.split("/").reverse()[0]}
+        />
+      }
     </div>
   );
 }

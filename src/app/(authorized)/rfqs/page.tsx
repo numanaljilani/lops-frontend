@@ -38,36 +38,59 @@ import {
   useDeleteCompanyMutation,
 } from "@/redux/query/componiesApi";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import AlertDialogAlert from "@/components/dialogs/AlertDialog";
 import {
-  useClientsMutation,
   useDeleteClientMutation,
 } from "../../../redux/query/clientsApi";
 import Alert from "@/components/dialogs/Alert";
+import { useAllRFQsMutation, useCreateRFQMutation } from "@/redux/query/rfqsApi";
+import CreateDialog from "@/components/dialogs/CreateDialog";
 
-function Clients() {
-  const router = useRouter();
-  const [companies, setCompanies] = useState([]);
+function RFQs() {
+  const [rfqs, setRFQs] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isCreateRFQDialogOpen, setIsCreateRFQDialogOpen] = useState(false);
 
   const [itemToDelete, setItemToDelete] = useState<any>(null);
+  const [rfq, setRfq] = useState<{
+    project_type: string;
+    scope_of_work: string;
+    status: string;
+    remarks: string;
+    client: string;
+  }>({
+    project_type: "",
+    scope_of_work: "",
+    status: "",
+    remarks: "",
+    client : "",
+  });
 
-  const [clientsApi, { data, isSuccess, error, isError }] =
-    useClientsMutation();
+  const [rfqsApi, { data, isSuccess, error, isError }] =
+  useAllRFQsMutation();
+  
+  const [createRFQApi] =
+    useCreateRFQMutation();
+
+    const handleSubmit =  async() =>{
+      const res = await createRFQApi({data : {...rfq , client :  1} , token : ""})
+      console.log(res , "response")
+      getRFQs()
+    }
   const [deleteClientApi] = useDeleteClientMutation();
 
-  const getClients = async () => {
-    const res = await clientsApi({});
+  const getRFQs = async () => {
+    const res = await rfqsApi({});
     console.log(res, "response");
   };
 
   useEffect(() => {
-    getClients();
+    getRFQs();
   }, []);
   useEffect(() => {
     if (isDialogOpen) {
-      getClients();
+      getRFQs();
     }
   }, [isDialogOpen]);
 
@@ -75,22 +98,22 @@ function Clients() {
     if (isSuccess) {
       console.log(data, "response from server");
       if (data) {
-        setCompanies(data);
+        setRFQs(data);
       }
     }
   }, [isSuccess]);
 
   const deleteClient = async () => {
-    const res = await deleteClientApi({
-      id: itemToDelete.client_id,
-      token: "",
-    });
-    console.log(res, ">>>>");
-    getClients();
+    // const res = await deleteClientApi({
+    //   id: itemToDelete.client_id,
+    //   token: "",
+    // });
+    // console.log(res, ">>>>");
+    // getRFQs();
   };
 
   const update = async (url: string) => {
-    router.push(`/clients/${url}`);
+    // router.push(`/clients/${url}`);
   };
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -98,14 +121,7 @@ function Clients() {
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <Tabs defaultValue="all">
             <div className="flex items-center">
-              {/* <TabsList>
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="Sales">Sales</TabsTrigger>
-              <TabsTrigger value="Team Leads">Team Leads</TabsTrigger>
-              <TabsTrigger value="Team Members">Team Members</TabsTrigger>
-              <TabsTrigger value="Sub-Contractors">Sub-Contractors</TabsTrigger>
-              <TabsTrigger value="Accounts">Accounts</TabsTrigger>
-            </TabsList> */}
+            
               <div className="ml-auto flex items-center gap-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -145,22 +161,22 @@ function Clients() {
                     Export
                   </span>
                 </Button>
-                <Link href="/clients/create-client">
-                  <Button size="sm" className="h-7 gap-1">
+               
+                  <Button size="sm" className="h-7 gap-1" onClick={()=>setIsCreateRFQDialogOpen(true)}>
                     <PlusCircle className="h-3.5 w-3.5" />
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Add Client
+                      Generate RFQ
                     </span>
                   </Button>
-                </Link>
+
               </div>
             </div>
             <TabsContent value="all">
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader>
-                  <CardTitle>Clients</CardTitle>
+                  <CardTitle>RFQ's</CardTitle>
                   <CardDescription>
-                    Manage your Clients and view their Projects Status.
+                    Manage your RFQ's and view their  Status.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -168,60 +184,52 @@ function Clients() {
                     <TableHeader>
                       <TableRow>
                         <TableHead className="hidden w-[100px] sm:table-cell">
-                          <span className="sr-only">Image</span>
+                          RFQ Id
                         </TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Company</TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          Contact
-                        </TableHead>
+                        <TableHead>Scope</TableHead>
+                       
                         <TableHead className="hidden md:table-cell">
                           Created at
                         </TableHead>
                         <TableHead>
-                          <span className="sr-only">Actions</span>
+                          Actions
                         </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {companies?.map(
+                      {rfqs?.map(
                         (
                           data: {
-                            client_name: string;
-                            created_at: string;
-                            name: string;
-                            contact_info: string;
+                            rfq_id: string;
+                            client: string;
+                            status: string;
+                            scope_of_work: string;
                             active: boolean;
-                            client_id: string;
+                            rfq_date: string;
                           },
                           index: number
                         ) => {
                           return (
                             <TableRow key={index}>
                               <TableCell className="hidden sm:table-cell">
-                                <Image
-                                  alt="Employee Image"
-                                  className="aspect-square rounded-md object-cover"
-                                  height="64"
-                                  src={`https://ui-avatars.com/api/?name=${data?.client_name}&&color=fff&&background=3A72EC&&rounded=true&&font-size=0.44`}
-                                  width="64"
-                                />
+                              {data?.rfq_id}
                               </TableCell>
                               <TableCell className="font-medium">
-                                {data?.client_name}
+                                {data?.client}
                               </TableCell>
                               <TableCell>
                                 <Badge variant="outline">
-                                  {data?.active ? "Active" : "Inactive"}
+                                  {data?.status ? "Active" : "Inactive"}
                                 </Badge>
                               </TableCell>
-                              <TableCell>{data?.name}</TableCell>
+                              {/* <TableCell>{data?.company_name}</TableCell> */}
                               <TableCell className="hidden md:table-cell">
-                                {data?.contact_info}
+                                {data?.scope_of_work}
                               </TableCell>
                               <TableCell className="hidden md:table-cell">
-                                {formatDate(data?.created_at)}
+                                {formatDate(data?.rfq_date)}
                               </TableCell>
                               <TableCell>
                                 <DropdownMenu>
@@ -242,7 +250,7 @@ function Clients() {
                                       Actions
                                     </DropdownMenuLabel>
                                     <DropdownMenuItem
-                                      onClick={() => update(data.client_id)}
+                                      onClick={() => update("")}
                                     >
                                       Edit
                                     </DropdownMenuItem>
@@ -286,9 +294,15 @@ function Clients() {
           handleDelete={deleteClient}
           name={itemToDelete?.client_name}
         />
+          {<CreateDialog setIsDialogOpen={setIsCreateRFQDialogOpen} isDialogOpen={isCreateRFQDialogOpen} 
+      rfq = {rfq}
+      setRfq={setRfq}
+      handleSubmit={handleSubmit}
+      // client={path.split("/").reverse()[0]}
+      />}
       </div>
     </div>
   );
 }
 
-export default Clients;
+export default RFQs;

@@ -6,8 +6,19 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 // Define a service using a base URL and expected endpoints
 export const RFQSApi = createApi({
   reducerPath: 'RFQSApi',
-  baseQuery: fetchBaseQuery({ baseUrl: `${urls.server}/api/v1/` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${urls.server}/api/v1/client_new/` }),
   endpoints: (builder) => ({
+    allRFQs: builder.mutation({
+        query: (data) => {
+          return {
+            url: "rfqs",
+            method: "GET",
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+            },
+          };
+        },
+      }),
     rfqs: builder.mutation({
         query: (data) => {
           return {
@@ -25,6 +36,17 @@ export const RFQSApi = createApi({
             url: "rfqs/",
             method: "POST",
             body: data.data,
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+            },
+          };
+        },
+      }),
+    RFQDetails: builder.mutation({
+        query: (data) => {
+          return {
+            url: `rfqs/${data.rfq_id}`,
+            method: "GET",
             headers: {
               "Content-type": "application/json; charset=UTF-8",
             },
@@ -77,4 +99,4 @@ export const RFQSApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useClientDetailsMutation , useRfqsMutation , useCreateRFQMutation , useDeleteClientMutation , usePatchClientMutation } = RFQSApi
+export const { useClientDetailsMutation ,useAllRFQsMutation,useRFQDetailsMutation, useRfqsMutation , useCreateRFQMutation , useDeleteClientMutation , usePatchClientMutation } = RFQSApi
