@@ -194,6 +194,7 @@ function Clients() {
                             contact_info: string;
                             active: boolean;
                             client_id: string;
+                            company_name: string;
                           },
                           index: number
                         ) => {
@@ -216,7 +217,10 @@ function Clients() {
                                   {data?.active ? "Active" : "Inactive"}
                                 </Badge>
                               </TableCell>
-                              <TableCell>{data?.name}</TableCell>
+                              <TableCell className="font-medium">
+                                {data?.company_name}
+                              </TableCell>
+                              {/* <TableCell>{data?.name}</TableCell> */}
                               <TableCell className="hidden md:table-cell">
                                 {data?.contact_info}
                               </TableCell>

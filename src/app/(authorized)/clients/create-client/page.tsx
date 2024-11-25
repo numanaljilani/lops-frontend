@@ -27,14 +27,14 @@ export default function CreateClient() {
   const [clientDetails, setClientDetails] = useState<{
     client_name: string;
     contact_info: string;
-    name: number;
+    company_name: any;
     type: string;
     status: boolean;
     about: string;
   }>({
     client_name: "",
     contact_info: "",
-    name: 1,
+    company_name: 1,
     type: "",
     status: true,
     about: "",
@@ -58,7 +58,7 @@ export default function CreateClient() {
       toast(`Company has been created.`, {
         description: `${clientDetails?.client_name} has been created .`,
       });
-      router.replace("/companies");
+      router.replace("/clients");
     }
   }, [isSuccess]);
   return (
@@ -95,7 +95,7 @@ export default function CreateClient() {
                           id="name"
                           type="text"
                           className="w-full"
-                          placeholder="LITES"
+                          placeholder="Khan"
                           onChange={(e) => {
                             e.preventDefault();
                             setClientDetails({
@@ -109,14 +109,13 @@ export default function CreateClient() {
                         <Label htmlFor="name">Company Name</Label>
                         <Input
                           id="name"
-                          type="number"
+                          type="text"
                           className="w-full"
                           placeholder="LITES"
                           onChange={(e) => {
                             e.preventDefault();
                             setClientDetails({
-                              ...clientDetails,
-                              name: Number(e.target.value),
+                              ...clientDetails,company_name: e.target.value,
                             });
                           }}
                         />

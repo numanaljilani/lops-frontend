@@ -65,7 +65,16 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		  animation: {
+			wave: 'wave 4s infinite linear',
+		  },
+		  keyframes: {
+			wave: {
+				'0%': { transform: 'translateX(-50%)' },
+				'100%': { transform: 'translateX(50%)' },
+			  },
+		  },
   	}
   },
   plugins: [require("tailwindcss-animate")],

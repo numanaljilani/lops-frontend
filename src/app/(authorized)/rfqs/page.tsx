@@ -40,14 +40,16 @@ import {
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import AlertDialogAlert from "@/components/dialogs/AlertDialog";
-import {
-  useDeleteClientMutation,
-} from "../../../redux/query/clientsApi";
+import { useDeleteClientMutation } from "../../../redux/query/clientsApi";
 import Alert from "@/components/dialogs/Alert";
-import { useAllRFQsMutation, useCreateRFQMutation } from "@/redux/query/rfqsApi";
+import {
+  useAllRFQsMutation,
+  useCreateRFQMutation,
+} from "@/redux/query/rfqsApi";
 import CreateDialog from "@/components/dialogs/CreateDialog";
 
 function RFQs() {
+  const router = useRouter()
   const [rfqs, setRFQs] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCreateRFQDialogOpen, setIsCreateRFQDialogOpen] = useState(false);
@@ -56,28 +58,31 @@ function RFQs() {
   const [rfq, setRfq] = useState<{
     project_type: string;
     scope_of_work: string;
+    quotation_number: string;
+    quotation_amount: string;
     status: string;
     remarks: string;
     client: string;
   }>({
     project_type: "",
     scope_of_work: "",
+    quotation_number: "",
+    quotation_amount: "",
     status: "",
     remarks: "",
-    client : "",
+    client: "",
   });
 
-  const [rfqsApi, { data, isSuccess, error, isError }] =
-  useAllRFQsMutation();
-  
-  const [createRFQApi] =
-    useCreateRFQMutation();
+  const [rfqsApi, { data, isSuccess, error, isError }] = useAllRFQsMutation();
 
-    const handleSubmit =  async() =>{
-      const res = await createRFQApi({data : {...rfq , client :  1} , token : ""})
-      console.log(res , "response")
-      getRFQs()
-    }
+  const [createRFQApi] = useCreateRFQMutation();
+
+  const handleSubmit = async () => {
+    setIsCreateRFQDialogOpen(false)
+    const res = await createRFQApi({ data: { ...rfq, client: 1 }, token: "" });
+    console.log(res, "response");
+    getRFQs();
+  };
   const [deleteClientApi] = useDeleteClientMutation();
 
   const getRFQs = async () => {
@@ -121,7 +126,6 @@ function RFQs() {
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <Tabs defaultValue="all">
             <div className="flex items-center">
-            
               <div className="ml-auto flex items-center gap-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -161,14 +165,17 @@ function RFQs() {
                     Export
                   </span>
                 </Button>
-               
-                  <Button size="sm" className="h-7 gap-1" onClick={()=>setIsCreateRFQDialogOpen(true)}>
-                    <PlusCircle className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Generate RFQ
-                    </span>
-                  </Button>
 
+                <Button
+                  size="sm"
+                  className="h-7 gap-1"
+                  onClick={() => setIsCreateRFQDialogOpen(true)}
+                >
+                  <PlusCircle className="h-3.5 w-3.5" />
+                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                    Generate RFQ
+                  </span>
+                </Button>
               </div>
             </div>
             <TabsContent value="all">
@@ -176,7 +183,7 @@ function RFQs() {
                 <CardHeader>
                   <CardTitle>RFQ's</CardTitle>
                   <CardDescription>
-                    Manage your RFQ's and view their  Status.
+                    Manage your RFQ's and view their Status.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -189,13 +196,12 @@ function RFQs() {
                         <TableHead>Name</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Scope</TableHead>
-                       
+                        <TableHead>Qoutation Amount</TableHead>
+
                         <TableHead className="hidden md:table-cell">
                           Created at
                         </TableHead>
-                        <TableHead>
-                          Actions
-                        </TableHead>
+                        <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -205,6 +211,7 @@ function RFQs() {
                             rfq_id: string;
                             client: string;
                             status: string;
+                            quotation_amount: string;
                             scope_of_work: string;
                             active: boolean;
                             rfq_date: string;
@@ -214,7 +221,7 @@ function RFQs() {
                           return (
                             <TableRow key={index}>
                               <TableCell className="hidden sm:table-cell">
-                              {data?.rfq_id}
+                                {data?.rfq_id}
                               </TableCell>
                               <TableCell className="font-medium">
                                 {data?.client}
@@ -227,6 +234,9 @@ function RFQs() {
                               {/* <TableCell>{data?.company_name}</TableCell> */}
                               <TableCell className="hidden md:table-cell">
                                 {data?.scope_of_work}
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {data?.quotation_amount}
                               </TableCell>
                               <TableCell className="hidden md:table-cell">
                                 {formatDate(data?.rfq_date)}
@@ -250,7 +260,7 @@ function RFQs() {
                                       Actions
                                     </DropdownMenuLabel>
                                     <DropdownMenuItem
-                                      onClick={() => update("")}
+                                      onClick={() => router.push(`/rfqs/${data.rfq_id}`)}
                                     >
                                       Edit
                                     </DropdownMenuItem>
@@ -294,12 +304,16 @@ function RFQs() {
           handleDelete={deleteClient}
           name={itemToDelete?.client_name}
         />
-          {<CreateDialog setIsDialogOpen={setIsCreateRFQDialogOpen} isDialogOpen={isCreateRFQDialogOpen} 
-      rfq = {rfq}
-      setRfq={setRfq}
-      handleSubmit={handleSubmit}
-      // client={path.split("/").reverse()[0]}
-      />}
+        {
+          <CreateDialog
+            setIsDialogOpen={setIsCreateRFQDialogOpen}
+            isDialogOpen={isCreateRFQDialogOpen}
+            rfq={rfq}
+            setRfq={setRfq}
+            handleSubmit={handleSubmit}
+            // client={path.split("/").reverse()[0]}
+          />
+        }
       </div>
     </div>
   );

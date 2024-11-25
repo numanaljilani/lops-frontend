@@ -68,6 +68,7 @@ export default function UpdateCompay() {
 
   const saveCompanyDetails = async () => {
     console.log(companyDetails);
+    setUpdateView(false)
     const res = await patchCompanyApi({
       id: path.split("/").reverse()[0],
       details : companyDetails,

@@ -9,19 +9,26 @@ import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { z } from "zod";
 
 export default function Login() {
+  const LoginSchema = z.object({
+    email: z.string().email(),
+    password: z.string(),
+  });
 
   const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm({ resolver: zodResolver(LoginSchema) });
   console.log(errors);
   async function onSubmit(data: any) {
     await new Promise((resolve) => setTimeout(resolve, 5000));
-    router.push("/dashboard")
+    router.push("/dashboard");
     console.log("data submited", data, errors);
   }
 
@@ -42,7 +49,7 @@ export default function Login() {
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
-                    type="email"
+                    type="text"
                     className={
                       errors.email &&
                       "border-destructive/80 text-destructive focus-visible:border-destructive/80 focus-visible:ring-destructive/30"

@@ -20,7 +20,8 @@ export const employeeApi = createApi({
         },
       }),
     createEmployee: builder.mutation({
-        query: (data) => {
+      query: (data) => {
+          console.log(data , "Inide Api")
           return {
             url: "employees/",
             method: "POST",

@@ -39,10 +39,10 @@ function Employee() {
     contact: string;
     description: string;
     location: string;
-    companyf: string;
+    company: string;
     position: string;
     salary: number;
-    hourly: number;
+    hourly_rate: number;
     Currency: string;
     status: boolean;
   }>({
@@ -51,10 +51,10 @@ function Employee() {
     contact: "",
     description: "",
     location: "",
-    companyf: "",
+    company: "",
     position: "",
     salary: 0,
-    hourly: 0,
+    hourly_rate: 0,
     Currency: "",
     status: false,
   });
@@ -276,7 +276,7 @@ function Employee() {
                             onValueChange={(value) =>
                               setEmployeeDetails({
                                 ...employeeDetails,
-                                companyf: value,
+                                company: value,
                               })
                             }
                           >
@@ -387,7 +387,7 @@ function Employee() {
                               e.preventDefault();
                               setEmployeeDetails({
                                 ...employeeDetails,
-                                hourly: Number(e.target.value),
+                                hourly_rate: Number(e.target.value),
                               });
                             }}
                           />
@@ -439,7 +439,7 @@ function Employee() {
                 <Button variant="outline" size="sm">
                   Discard
                 </Button>
-                <Button size="sm">Save Product</Button>
+                <Button size="sm">Save</Button>
               </div>
             </div>
           </main>
@@ -519,7 +519,7 @@ function Employee() {
                             {
                               companies?.filter(
                                 (data: any) =>
-                                  data.url == employeeDetails.companyf
+                                  data.url == employeeDetails.company
                               )[0]?.name
                             }
                           </h4>
@@ -532,19 +532,9 @@ function Employee() {
                         </div>
                         <div className="grid gap-3">
                           <Label htmlFor="Salary">Salary (AED)</Label>
-                          <Input
-                            id="Salary"
-                            type="number"
-                            className="w-full"
-                            placeholder="5000 AED"
-                            onChange={(e) => {
-                              e.preventDefault();
-                              setEmployeeDetails({
-                                ...employeeDetails,
-                                salary: Number(e.target.value),
-                              });
-                            }}
-                          />
+                          <h4 className="font-semibold text-lg">
+                            {employeeDetails.salary}
+                          </h4>
                         </div>
                         <div className="grid gap-3">
                           <Label htmlFor="subcategory">Currency</Label>
@@ -553,7 +543,7 @@ function Employee() {
                         <div className="grid gap-3">
                           <Label htmlFor="Hourly">Hourly Rate (AED)</Label>
 
-                          <h4>{employeeDetails.name}</h4>
+                          <h4>{employeeDetails.hourly_rate}</h4>
                         </div>
                       </div>
                     </CardContent>
@@ -567,7 +557,7 @@ function Employee() {
                     <CardContent>
                       <div className="grid gap-6">
                         <div className="grid gap-3">
-                          <Label htmlFor="status">Status</Label>
+                          {/* <Label htmlFor="status">Status</Label> */}
                           <h4 className="font-semibold text-lg">
                             {employeeDetails.status ? "Active" : "Inactive"}
                           </h4>

@@ -193,8 +193,10 @@ function Employee() {
                         (
                           data: {
                             name: string;
-                            added_date: string;
+                            created_at: string;
                             url: string;
+                            salary: string;
+                            status: boolean;
                           },
                           index
                         ) => {
@@ -213,14 +215,14 @@ function Employee() {
                                 {data?.name}
                               </TableCell>
                               <TableCell>
-                                <Badge variant="outline">Active</Badge>
+                                <Badge variant="outline">{data.status ? "Active" : "Inactive"}</Badge>
                               </TableCell>
-                              <TableCell>$499.99</TableCell>
+                              <TableCell>{data?.salary}</TableCell>
                               <TableCell className="hidden md:table-cell">
                                 25
                               </TableCell>
                               <TableCell className="hidden md:table-cell">
-                                {formatDate(data?.added_date)}
+                                {formatDate(data?.created_at)}
                               </TableCell>
                               <TableCell>
                                 <DropdownMenu>

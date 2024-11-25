@@ -223,9 +223,9 @@ function RFQDetails() {
 
                   <Card x-chunk="dashboard-07-chunk-5">
                     <CardHeader>
-                      <CardTitle>Quotation</CardTitle>
+                      <CardTitle>LPO</CardTitle>
                       <CardDescription>
-                        Create the Quotation for this RFQ.
+                        Create the LPO for this RFQ.
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -235,7 +235,7 @@ function RFQDetails() {
                           className="flex-1"
                           onClick={() => setUpdateView(true)}
                         >
-                          Make Quotation
+                          Make LPO
                         </Button>
                         
                       </div>
