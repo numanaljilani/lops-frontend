@@ -47,13 +47,17 @@ import {
   useCreateRFQMutation,
 } from "@/redux/query/rfqsApi";
 import CreateDialog from "@/components/dialogs/CreateDialog";
+import { useJobsMutation } from "@/redux/query/jobApi";
+import CreateTask from "@/components/dialogs/CreateTask";
 
 function Projects() {
   const router = useRouter()
-  const [rfqs, setRFQs] = useState([]);
+  const [jobs, setJobs] = useState([]);
+  const [projectDetails, setProjectDetails] = useState<any>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCreateRFQDialogOpen, setIsCreateRFQDialogOpen] = useState(false);
 
+  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<any>(null);
   const [rfq, setRfq] = useState<{
     project_type: string;
@@ -73,7 +77,7 @@ function Projects() {
     client: "",
   });
 
-  const [rfqsApi, { data, isSuccess, error, isError }] = useAllRFQsMutation();
+  const [jobApi, { data, isSuccess, error, isError }] = useJobsMutation();
 
   const [createRFQApi] = useCreateRFQMutation();
 
@@ -81,21 +85,20 @@ function Projects() {
     setIsCreateRFQDialogOpen(false)
     const res = await createRFQApi({ data: { ...rfq, client: 1 }, token: "" });
     console.log(res, "response");
-    getRFQs();
+    getJobs();
   };
-  const [deleteClientApi] = useDeleteClientMutation();
 
-  const getRFQs = async () => {
-    const res = await rfqsApi({});
+  const getJobs = async () => {
+    const res = await jobApi({});
     console.log(res, "response");
   };
 
   useEffect(() => {
-    getRFQs();
+    getJobs();
   }, []);
   useEffect(() => {
     if (isDialogOpen) {
-      getRFQs();
+      getJobs();
     }
   }, [isDialogOpen]);
 
@@ -103,7 +106,7 @@ function Projects() {
     if (isSuccess) {
       console.log(data, "response from server");
       if (data) {
-        setRFQs(data);
+        setJobs(data);
       }
     }
   }, [isSuccess]);
@@ -114,7 +117,7 @@ function Projects() {
     //   token: "",
     // });
     // console.log(res, ">>>>");
-    // getRFQs();
+    // getJobs();
   };
 
   const update = async (url: string) => {
@@ -169,11 +172,11 @@ function Projects() {
                 <Button
                   size="sm"
                   className="h-7 gap-1"
-                  onClick={() => setIsCreateRFQDialogOpen(true)}
+                  onClick={() => router.push("/rfqs")}
                 >
                   <PlusCircle className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                    Generate RFQ
+                    Create Project
                   </span>
                 </Button>
               </div>
@@ -191,55 +194,55 @@ function Projects() {
                     <TableHeader>
                       <TableRow>
                         <TableHead className="hidden w-[100px] sm:table-cell">
-                          RFQ Id
+                          Job Id
                         </TableHead>
-                        <TableHead>Name</TableHead>
+                        <TableHead>Job No.</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Scope</TableHead>
-                        <TableHead>Qoutation Amount</TableHead>
+                        {/* <TableHead>Qoutation Amount</TableHead> */}
 
                         <TableHead className="hidden md:table-cell">
-                          Created at
+                          Deadline at
                         </TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {rfqs?.map(
+                      {jobs?.map(
                         (
                           data: {
-                            rfq_id: string;
-                            client: string;
+                            job_id: string;
+                            job_number: string;
                             status: string;
                             quotation_amount: string;
                             scope_of_work: string;
                             active: boolean;
-                            rfq_date: string;
+                            delivery_timelines: string;
                           },
                           index: number
                         ) => {
                           return (
                             <TableRow key={index}>
                               <TableCell className="hidden sm:table-cell">
-                                {data?.rfq_id}
+                                {data?.job_id}
                               </TableCell>
                               <TableCell className="font-medium">
-                                {data?.client}
+                                {data?.job_number}
                               </TableCell>
                               <TableCell>
                                 <Badge variant="outline">
-                                  {data?.status ? "Active" : "Inactive"}
+                                  {data?.status}
                                 </Badge>
                               </TableCell>
                               {/* <TableCell>{data?.company_name}</TableCell> */}
                               <TableCell className="hidden md:table-cell">
                                 {data?.scope_of_work}
                               </TableCell>
-                              <TableCell className="hidden md:table-cell">
+                              {/* <TableCell className="hidden md:table-cell">
                                 {data?.quotation_amount}
-                              </TableCell>
+                              </TableCell> */}
                               <TableCell className="hidden md:table-cell">
-                                {formatDate(data?.rfq_date)}
+                                {formatDate(data?.delivery_timelines)}
                               </TableCell>
                               <TableCell>
                                 <DropdownMenu>
@@ -260,7 +263,15 @@ function Projects() {
                                       Actions
                                     </DropdownMenuLabel>
                                     <DropdownMenuItem
-                                      onClick={() => router.push(`/projects/${data.rfq_id}`)}
+                                      onClick={() => {
+                                        setIsTaskDialogOpen(true)
+                                        setProjectDetails(data)
+                                      }}
+                                    >
+                                      Task
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      onClick={() => router.push(`/projects/${data.job_id}`)}
                                     >
                                       Edit
                                     </DropdownMenuItem>
@@ -313,6 +324,14 @@ function Projects() {
             handleSubmit={handleSubmit}
             // client={path.split("/").reverse()[0]}
           />
+        }
+        {
+           <CreateTask
+           isDialogOpen={isTaskDialogOpen}
+           setIsDialogOpen={setIsTaskDialogOpen}
+           details = {projectDetails}
+           
+         />
         }
       </div>
     </div>

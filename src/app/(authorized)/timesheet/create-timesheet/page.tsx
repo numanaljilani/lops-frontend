@@ -125,7 +125,7 @@ export default function CreateEmployee() {
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+        <main className=" flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
               <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
@@ -141,7 +141,7 @@ export default function CreateEmployee() {
                 </Button>
               </div>
             </div>
-            <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
+            <div className="w-full gap-4 lg:gap-8">
               <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                 <Card x-chunk="dashboard-07-chunk-0">
                   <CardHeader>
@@ -186,156 +186,8 @@ export default function CreateEmployee() {
                         />
                       </div>
 
-                      <div className="grid gap-3">
-                        <Label htmlFor="description">Remark</Label>
-                        <Textarea
-                          id="description"
-                          defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
-                          className="min-h-32"
-                          onChange={(e) => {
-                            e.preventDefault();
-                            setTimeSheet({
-                              ...timeSheet,
-                              remark: e.target.value,
-                            });
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* <Card x-chunk="dashboard-07-chunk-1">
-                  <CardHeader>
-                    <CardTitle>Compony Details</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-6 sm:grid-cols-2">
-                      <div className="grid gap-3">
-                        <Label htmlFor="category">Compony</Label>
-                        <Select
-                          onValueChange={(value) =>
-                            setTimeSheet({
-                              ...timeSheet,
-                              companyf: value,
-                            })
-                          }
-                        >
-                          <SelectTrigger
-                            id="category"
-                            aria-label="Select Compony"
-                          >
-                            <SelectValue placeholder="Select Compony" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {companies.map(
-                              (data: { name: string; url: string }, index) => (
-                                <SelectItem key={index} value={data?.url}>
-                                  {data?.name}
-                                </SelectItem>
-                              )
-                            )}
-                  
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="grid gap-3">
-                        <Label htmlFor="subcategory">Designation</Label>
-                        <Select
-                          onValueChange={(value) =>
-                            setTimeSheet({
-                              ...timeSheet,
-                              position: value,
-                            })
-                          }
-                        >
-                          <SelectTrigger
-                            id="subcategory"
-                            aria-label="Select Designation"
-                          >
-                            <SelectValue placeholder="Select subcategory" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Sales Member">
-                              Sales Member
-                            </SelectItem>
-                            <SelectItem value="Team Leads">
-                              Team Leads
-                            </SelectItem>
-                            <SelectItem value="Team Members">
-                              Team Members
-                            </SelectItem>
-                            <SelectItem value="Sub-Contractors">
-                              Sub-Contractors
-                            </SelectItem>
-                            <SelectItem value="Accountant Members">
-                              Accountant Members
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="grid gap-3">
-                        <Label htmlFor="Salary">Salary (AED)</Label>
-                        <Input
-                          id="Salary"
-                          type="number"
-                          className="w-full"
-                          placeholder="5000 AED"
-                          onChange={(e) => {
-                            e.preventDefault();
-                            setTimeSheet({
-                              ...timeSheet,
-                              salary: Number(e.target.value),
-                            });
-                          }}
-                        />
-                      </div>
-                      <div className="grid gap-3">
-                        <Label htmlFor="subcategory">Currency</Label>
-                        <Select
-                          onValueChange={(value) =>
-                            setTimeSheet({
-                              ...timeSheet,
-                              Currency: value,
-                            })
-                          }
-                        >
-                          <SelectTrigger
-                            id="subcategory"
-                            aria-label="Select Currency"
-                          >
-                            <SelectValue placeholder="Select Currency" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="AED">AED</SelectItem>
-                            <SelectItem value="USD">USD</SelectItem>
-                            <SelectItem value="INR">INR</SelectItem>
-                            <SelectItem value="SAR">SAR</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="grid gap-3">
-                        <Label htmlFor="Hourly">Hourly Rate (AED)</Label>
-                        <Input
-                          id="Hourly"
-                          type="number"
-                          className="w-full"
-                          placeholder="20 AED"
-                          onChange={(e) => {
-                            e.preventDefault();
-                            setTimeSheet({
-                              ...timeSheet,
-                              hourly: Number(e.target.value),
-                            });
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card> */}
-              </div>
-              <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-3">
+                      
+                      <Card x-chunk="dashboard-07-chunk-3">
                   <CardHeader>
                     <CardTitle>Houres Logged</CardTitle>
                   </CardHeader>
@@ -353,22 +205,27 @@ export default function CreateEmployee() {
                     </div>
                   </CardContent>
                 </Card>
-
-                <Card x-chunk="dashboard-07-chunk-5">
-                  <CardHeader>
-                    <CardTitle>Archive Product</CardTitle>
-                    <CardDescription>
-                      Lipsum dolor sit amet, consectetur adipiscing elit.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div></div>
-                    <Button size="sm" variant="secondary">
-                      Archive Product
-                    </Button>
+                      <div className="grid gap-3">
+                        <Label htmlFor="description">Remark</Label>
+                        <Textarea
+                          id="description"
+                         className="min-h-32"
+                         placeholder="Write a remark......"
+                          onChange={(e) => {
+                            e.preventDefault();
+                            setTimeSheet({
+                              ...timeSheet,
+                              remark: e.target.value,
+                            });
+                          }}
+                        />
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
+
               </div>
+            
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">
               <Button variant="outline" size="sm">

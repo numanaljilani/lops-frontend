@@ -31,12 +31,7 @@ import {
 import { Tabs } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDate } from "@/lib/dateFormat";
-import { useClientDetailsMutation } from "@/redux/query/clientsApi";
-import {
-  useCompanyDetailsMutation,
-  useCreateCompanyMutation,
-  usePatchCompanyMutation,
-} from "@/redux/query/componiesApi";
+import { useClientDetailsMutation, usePatchClientMutation } from "@/redux/query/clientsApi";
 import { useCreateRFQMutation, useRfqsMutation } from "@/redux/query/rfqsApi";
 import {
   DropdownMenu,
@@ -80,7 +75,7 @@ export default function Client() {
     useClientDetailsMutation();
 
   const [rfqsApi] = useRfqsMutation();
-  const [patchCompanyApi] = usePatchCompanyMutation();
+  const [patchClientApi] = usePatchClientMutation();
 
   const [rfq, setRfq] = useState<{
     project_type: string;
@@ -130,7 +125,7 @@ export default function Client() {
   const saveCompanyDetails = async () => {
     console.log(companyDetails);
     setUpdateView(false);
-    const res = await patchCompanyApi({
+    const res = await patchClientApi({
       id: path.split("/").reverse()[0],
       details: companyDetails,
       token: "",

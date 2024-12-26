@@ -192,7 +192,7 @@ function Clients() {
                             created_at: string;
                             name: string;
                             contact_info: string;
-                            active: boolean;
+                            status: boolean;
                             client_id: string;
                             company_name: string;
                           },
@@ -214,7 +214,7 @@ function Clients() {
                               </TableCell>
                               <TableCell>
                                 <Badge variant="outline">
-                                  {data?.active ? "Active" : "Inactive"}
+                                  {data?.status ? "Active" : "Inactive"}
                                 </Badge>
                               </TableCell>
                               <TableCell className="font-medium">

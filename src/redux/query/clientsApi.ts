@@ -59,7 +59,7 @@ export const clientsApi = createApi({
       patchClient: builder.mutation({
         query: (data) => {
           return {
-            url: `companies/${data.id}/`,
+            url: `clients/${data.id}/`,
             method: "PATCH",
             body : data.details,
             headers: {

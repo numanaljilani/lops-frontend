@@ -47,15 +47,35 @@ import {
   useCreateRFQMutation,
 } from "@/redux/query/rfqsApi";
 import CreateDialog from "@/components/dialogs/CreateDialog";
+import CreateLPO from "@/components/dialogs/CreateLPO";
 
 function RFQs() {
-  const router = useRouter()
+  const router = useRouter();
   const [rfqs, setRFQs] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCreateRFQDialogOpen, setIsCreateRFQDialogOpen] = useState(false);
+  const [isCreateLPODialogOpen, setIsCreateLPODialogOpen] = useState(false);
 
   const [itemToDelete, setItemToDelete] = useState<any>(null);
+  const [selectedRFQ, setSelectedRFQ] = useState<any>({});
   const [rfq, setRfq] = useState<{
+    project_type: string;
+    scope_of_work: string;
+    quotation_number: string;
+    quotation_amount: string;
+    status: string;
+    remarks: string;
+    client: string;
+  }>({
+    project_type: "",
+    scope_of_work: "",
+    quotation_number: "",
+    quotation_amount: "",
+    status: "",
+    remarks: "",
+    client: "",
+  });
+  const [lpo, setLpo] = useState<{
     project_type: string;
     scope_of_work: string;
     quotation_number: string;
@@ -78,7 +98,7 @@ function RFQs() {
   const [createRFQApi] = useCreateRFQMutation();
 
   const handleSubmit = async () => {
-    setIsCreateRFQDialogOpen(false)
+    setIsCreateRFQDialogOpen(false);
     const res = await createRFQApi({ data: { ...rfq, client: 1 }, token: "" });
     console.log(res, "response");
     getRFQs();
@@ -201,6 +221,7 @@ function RFQs() {
                         <TableHead className="hidden md:table-cell">
                           Created at
                         </TableHead>
+                        <TableHead>Create Job</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -241,6 +262,18 @@ function RFQs() {
                               <TableCell className="hidden md:table-cell">
                                 {formatDate(data?.rfq_date)}
                               </TableCell>
+                              <TableCell className=" md:table-cell">
+                                <Button
+                                  size="sm"
+                                  className="h-7 gap-1"
+                                  onClick={() => {
+                                    setSelectedRFQ(data);
+                                    setIsCreateLPODialogOpen(true);
+                                  }}
+                                >
+                                  <PlusCircle className="h-3.5 w-3.5" />
+                                </Button>
+                              </TableCell>
                               <TableCell>
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
@@ -260,7 +293,9 @@ function RFQs() {
                                       Actions
                                     </DropdownMenuLabel>
                                     <DropdownMenuItem
-                                      onClick={() => router.push(`/rfqs/${data.rfq_id}`)}
+                                      onClick={() =>
+                                        router.push(`/rfqs/${data.rfq_id}`)
+                                      }
                                     >
                                       Edit
                                     </DropdownMenuItem>
@@ -312,6 +347,13 @@ function RFQs() {
             setRfq={setRfq}
             handleSubmit={handleSubmit}
             // client={path.split("/").reverse()[0]}
+          />
+        }
+        {
+          <CreateLPO
+            setIsDialogOpen={setIsCreateLPODialogOpen}
+            isDialogOpen={isCreateLPODialogOpen}
+            data={selectedRFQ}
           />
         }
       </div>
